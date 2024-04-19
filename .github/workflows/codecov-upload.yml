@@ -26,8 +26,8 @@ jobs:
       fail-fast: false
       matrix:
         artifact-name:
-          - coverage-linux
-          - coverage-win64
+          - coverage-report-linux
+          - coverage-report-win64
     steps:
       - name: Download artifacts from triggering workflow
         env:
