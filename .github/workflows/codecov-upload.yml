@@ -43,7 +43,8 @@ jobs:
           fail_ci_if_error: true
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
-          name: ${{ github.event.workflow_run.display_title }}
+          name: ${{ github.event.workflow_run.id }}
+          job_code: ${{ github.event.workflow_run.name }}
           override_build: ${{ github.event.workflow_run.id }}
           override_build_url: ${{ github.event.workflow_run.url }}
           override_commit: ${{ github.event.workflow_run.head_sha }}
