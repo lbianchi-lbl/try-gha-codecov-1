@@ -1,0 +1,46 @@
+name: Upload to Codecov
+on:
+  workflow_run:
+    workflows:
+      - Checks
+    types:
+      - completed
+
+jobs:
+  show-info:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Show event payload
+        uses: actions/github-script@v7
+        with:
+          script: |
+            txt = JSON.stringify(context.event.workflow_run, null, 4);
+            core.summary.addCodeBlock(txt, 'json');
+            core.summary.write()
+
+  # upload:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       report-variant: ["linux", "win64"]
+  #   steps:
+  #     - name: Download artifacts from triggering workflow
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         gh run --repo ${{ github.repository }} download --name
+  #         ls -l
+      # # the checkout step is needed to have access to codecov.yml
+      # - uses: actions/checkout@v4
+      # - name: Upload coverage report to Codecov
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     fail_ci_if_error: true
+      #     verbose: true
+      #     # NOTE: secrets are not available for pull_request workflows
+      #     # However, as of 2024-02-10, Codecov is still allowing tokenless upload from PRs
+      #     # but does require token for other workflows e.g. merge to `main`
+      #     # see https://github.com/codecov/codecov-action/issues/1274#issuecomment-1934437359
+      #     token: ${{ secrets.CODECOV_TOKEN }}

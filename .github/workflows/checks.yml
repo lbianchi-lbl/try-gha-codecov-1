@@ -1,0 +1,66 @@
+name: Checks
+
+on:
+  push:
+  pull_request:
+
+env:
+  PYTEST_ADDOPTS: "--color=yes"
+
+jobs:
+  pytest:
+    name: pytest (${{ matrix.os }}/py${{ matrix.python-version }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux, win64]
+        python-version: ['3.10', '3.11', '3.12']
+        include:
+          - os: linux
+            runner: ubuntu-latest
+          - os: win64
+            run: windows-latest
+          - python-version: '3.11'
+            coverage: 'true'
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v4
+      - name: pip install
+        run: |
+          pip install --progress-bar off .
+      - name: Add coverage options
+        if: matrix.coverage
+        run: |
+          echo PYTEST_ADDOPTS="$PYTEST_ADDOPTS --cov --cov-report=xml" >> "$GITHUB_ENV"
+      - run: |
+          pytest --pyargs sample
+      - name: Upload coverage report
+        if: matrix.coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.os }}
+          path: coverage.xml
+          if-no-files-found: error
+
+  upload-coverage:
+    name: Upload coverage report (Codecov)
+    needs: [pytest]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        report-variant: ["linux", "win64"]
+    steps:
+      # the checkout step is needed to have access to codecov.yml
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.report-variant }}
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          verbose: true
