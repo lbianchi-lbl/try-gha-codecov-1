@@ -41,7 +41,6 @@ jobs:
           fail_ci_if_error: true
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage-report-linux/coverage.xml,coverage-report-win64/coverage.xml
 
   #   strategy:
   #     fail-fast: false
