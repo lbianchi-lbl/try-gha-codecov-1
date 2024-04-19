@@ -20,7 +20,7 @@ jobs:
           - os: linux
             runner: ubuntu-latest
           - os: win64
-            run: windows-latest
+            runner: windows-latest
           - python-version: '3.11'
             coverage: 'true'
     steps:
