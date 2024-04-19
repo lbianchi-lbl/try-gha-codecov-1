@@ -23,11 +23,11 @@ jobs:
     name: Upload coverage reports
     runs-on: ubuntu-latest
     steps:
-      - name: Download codecov.yml file
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          sparse-checkout: codecov.yml
-          sparse-checkout-cone-mode: false
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_sha }}
       - name: Display codecov.yml file
         run: cat codecov.yml
       - name: Download artifacts from triggering workflow
