@@ -44,6 +44,7 @@ jobs:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
           name: ${{ github.event.workflow_run.display_title }}
+          override_build_url: ${{ github.event.workflow_run.url }}
           override_commit: ${{ github.event.workflow_run.head_sha }}
           override_branch: ${{ github.event.workflow_run.head_branch }}
           override_pr: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.pull_requests[0].number || '' }}
