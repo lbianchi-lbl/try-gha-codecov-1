@@ -19,8 +19,15 @@ jobs:
             core.summary.addCodeBlock(txt, 'json');
             core.summary.write()
 
-  # upload:
-  #   runs-on: ubuntu-latest
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts from triggering workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run download ${{ github.event.workflow_run.id }} --repo ${{ github.repository }} --pattern 'coverage*'
+          ls -lah
   #   strategy:
   #     fail-fast: false
   #     matrix:
