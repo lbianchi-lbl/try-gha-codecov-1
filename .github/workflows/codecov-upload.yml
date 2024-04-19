@@ -28,6 +28,18 @@ jobs:
         run: |
           gh run download ${{ github.event.workflow_run.id }} --repo ${{ github.repository }} --pattern 'coverage*'
           ls -lahR
+      - name: Download codecov.yml file
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: codecov.yml
+          sparse-checkout-cone-mode: false
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   #   strategy:
   #     fail-fast: false
   #     matrix:
