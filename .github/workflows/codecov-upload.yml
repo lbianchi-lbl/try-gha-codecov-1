@@ -20,20 +20,14 @@ jobs:
             core.summary.write()
 
   upload:
-    name: Upload ${{ matrix.artifact-name }}
+    name: Upload coverage reports
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        artifact-name:
-          - coverage-report-linux
-          - coverage-report-win64
     steps:
       - name: Download artifacts from triggering workflow
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh run download ${{ github.event.workflow_run.id }} --repo ${{ github.repository }} --name "${{ matrix.artifact-name }}"
+          gh run download ${{ github.event.workflow_run.id }} --repo ${{ github.repository }} --pattern 'coverage-report-*'
           ls -lahR
       - name: Download codecov.yml file
         uses: actions/checkout@v4
@@ -46,6 +40,7 @@ jobs:
           fail_ci_if_error: true
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage-report-linux/coverage.xml,coverage-report-win64/coverage.xml
 
   #   strategy:
   #     fail-fast: false
