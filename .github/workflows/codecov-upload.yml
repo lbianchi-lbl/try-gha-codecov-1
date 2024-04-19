@@ -28,6 +28,8 @@ jobs:
         with:
           sparse-checkout: codecov.yml
           sparse-checkout-cone-mode: false
+      - name: Display codecov.yml file
+        run: cat codecov.yml
       - name: Download artifacts from triggering workflow
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
