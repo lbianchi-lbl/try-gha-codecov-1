@@ -20,13 +20,20 @@ jobs:
             core.summary.write()
 
   upload:
+    name: Upload ${{ matrix.artifact-name }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        artifact-name:
+          - coverage-linux
+          - coverage-win64
     steps:
       - name: Download artifacts from triggering workflow
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh run download ${{ github.event.workflow_run.id }} --repo ${{ github.repository }} --pattern 'coverage*'
+          gh run download ${{ github.event.workflow_run.id }} --repo ${{ github.repository }} --name "${{ matrix.artifact-name }}"
           ls -lahR
       - name: Download codecov.yml file
         uses: actions/checkout@v4
